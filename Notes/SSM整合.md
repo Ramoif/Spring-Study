@@ -1,0 +1,11 @@
+SSM整合（Spring+SpringMVC+Mybatis）
+```text
+环境要求：
+IDEA、Mysql5.7、Tomcat9、Maven。
+知识要求：
+MySql、Spring、JavaWeb原理、Mybatis、简单前端知识。
+```
+设计的开发步骤：第一步、数据库构建
+```text
+开始构建自己的项目，思考数据库要创建一些什么内容？
+```

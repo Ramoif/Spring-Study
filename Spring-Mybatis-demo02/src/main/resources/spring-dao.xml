@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        https://www.springframework.org/schema/tx/spring-tx.xsd">
+    <!--第一步：sqlSessionFactory对象和DataSource对象。-->
+    <!--DataSource使用Spring的数据源替换Mybatis的配置，其实就是取代mybatis-config（c3p0 dbcp druid）-->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url"
+                  value="jdbc:mysql://localhost:3306/pro_db?useSSL=false&amp;useUnicode=true&amp;characterEncoding=UTF-8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="1234"/>
+    </bean>
+    <!--sqlSessionFactory取代utils工具类中的Mybatis获取类。直接取用即可。-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="mapperLocations" value="classpath:com/ycsx/mapper/*.xml"/>
+    </bean>
+    <!--Template就是我们使用的sqlSession-->
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+        <!--因为没有set方法。所以只能使用构造器注入。-->
+        <constructor-arg index="0" ref="sqlSessionFactory"/>
+    </bean>
+    <!--配置声明式事务-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- =========================================================================================== -->
+    <!--Spring声明式事务：结合AOP实现织入事务，配置事务的通知advice。（作用：事务的一致性和完整性，一气呵成，只有成功和失败两种状态。）-->
+    <tx:advice id="txAdvicce" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!--默认参数：Required支持当前事务，如果当前没有事务，就新建一个事务。-->
+            <tx:method name="add" propagation="REQUIRED"/>
+            <tx:method name="delete"/>
+            <tx:method name="update"/>
+            <tx:method name="query" read-only="true"/>
+            <tx:method name="*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+    <!--开始配置事务的切入-->
+    <aop:config>
+        <aop:pointcut id="txPointCut" expression="execution(* com.ycsx.mapper.*.*(..))"/><!--所有类的所有方法【.*.*(..)】-->
+        <aop:advisor advice-ref="txAdvicce" pointcut-ref="txPointCut"/>
+    </aop:config>
+    <!-- =========================================================================================== -->
+    <!--已经删除了其他的东西，现在这个配置文件专注于操作数据库和横向切入的AOP事务管理。-->
+</beans>

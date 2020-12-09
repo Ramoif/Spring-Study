@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--第一步注册bean-->
+    <bean id="userService" class="com.ycsx.service.UserServiceImpl"/>
+    <bean id="log" class="com.ycsx.log.Log"/>
+    <bean id="afterLog" class="com.ycsx.log.AfterLog"/>
+    <!--方式一注册-->
+<!--    <aop:config>
+        &lt;!&ndash;step1.切入点：expression表达式，execution(要执行的位置，* * * *) ; 位置.实现类.*代表所有方法，(..)代表参数 &ndash;&gt;
+        <aop:pointcut id="pointcut" expression="execution(* com.ycsx.service.UserServiceImpl.*(..))"/>
+        &lt;!&ndash;执行环绕增加&ndash;&gt;
+        <aop:advisor advice-ref="log" pointcut-ref="pointcut"/>
+        <aop:advisor advice-ref="afterLog" pointcut-ref="pointcut"/>
+    </aop:config>-->
+
+
+    <!--方式二注册-->
+<!--    <bean id="diy" class="com.ycsx.diy.DiyPointCut"/>
+
+    <aop:config>
+        &lt;!&ndash; aspect切面 &ndash;&gt;
+        <aop:aspect ref="diy">
+            &lt;!&ndash; 再次复习execution：第一个*代表返回类型 *是所有的类型，第二个是包名，第二个*号代表类名。*表示所有的类，(..)代表方法名，..代表所有的参数。 *(..)  &ndash;&gt;
+            <aop:pointcut id="point" expression="execution(* com.ycsx.service.UserServiceImpl.*(..))"/>
+            &lt;!&ndash;通知,p-ref调用的是上一行的id="" &ndash;&gt;
+            <aop:before method="before" pointcut-ref="point"/>
+            <aop:after method="after" pointcut-ref="point"/>
+        </aop:aspect>
+    </aop:config>-->
+
+    <!--方式三：注解注册-->
+    <bean id="annotationPointCut" class="com.ycsx.diy.AnnotationPointCut"/>
+    <!--开启注解支持-->
+    <!--自动代理 后面可以接参数jdk和cglib-->
+    <aop:aspectj-autoproxy/>
+
+</beans>
