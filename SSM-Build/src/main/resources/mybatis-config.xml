@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--添加日志，在编写修改业务的时候想到了这个。-->
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+    </settings>
+
+    <!--编写数据源，交给Spring去做-->
+    <typeAliases>
+        <package name="com.ycsx.pojo"/>
+    </typeAliases>
+
+    <!--第八步，注册-->
+    <mappers>
+        <mapper class="com.ycsx.dao.BookMapper"/>
+    </mappers>
+</configuration>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+<!--第1步：关联数据库配置文件-->
+    <context:property-placeholder location="classpath:database.properties"/>
+<!--第2步：连接池（有很多种，dbcp c3p0 druid hikari）-->
+    <bean id="datasource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${jdbc.driver}"/>
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="user" value="${jdbc.user}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <!--分别是 c3p0连接池的私有属性、关闭连接后不自动commit、获取连接超时时间、当获取连接失败的重试次数。-->
+        <property name="maxPoolSize" value="30"/>
+        <property name="minPoolSize" value="10"/>
+        <property name="autoCommitOnClose" value="false"/>
+        <property name="checkoutTimeout" value="10000"/>
+        <property name="acquireRetryAttempts" value="2"/>
+    </bean>
+<!--第3步：sqlSessionFactory-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--引用数据源-->
+        <property name="dataSource" ref="datasource"/>
+        <!--绑定mybatis的配置文件-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    </bean>
+<!--第4步：配置dao接口扫描包，动态实现dao接口可以注入到spring容器中（就不需要手动配置了）-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--1、注入sqlSession。这里的value = sqlSessionFactory是上面的bean-id对应的。-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <!--2、扫描dao接口。一劳永逸。-->
+        <property name="basePackage" value="com.ycsx.dao"/>
+    </bean>
+</beans>

@@ -19,6 +19,8 @@
         <module>SpringMVC-demo03</module>
         <module>SpringMVC-demo04</module>
         <module>SpringMVC-demo05</module>
+        <module>SSM-Build</module>
+        <module>SpringMVC-demo06-ajax</module>
     </modules>
     <dependencies>
         <!--Spring操作数据库依赖 -->

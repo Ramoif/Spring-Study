@@ -5,16 +5,25 @@
 参考狂神说的笔记整理而来。
 文档地址：http://dwz.date/ac27
 ```
-xml的基本框架
+(spring)的基本框架
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-        https://www.springframework.org/schema/beans/spring-beans.xsd">
-    
-    
+        https://www.springframework.org/schema/beans/spring-beans.xsd">    
+
 </beans>
+```
+(mybatis)配置框架
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+</configuration>
 ```
 maven项目依赖pom.xml中配置
 ```xml

@@ -13,7 +13,9 @@
         <module name="Spring-Mybatis-demo01" />
         <module name="spring-demo02" />
         <module name="Spring-demo01" />
+        <module name="SSM-Build" />
         <module name="Spring-demo03" />
+        <module name="SpringMVC-demo06-ajax" />
         <module name="SpringMVC-demo01" />
         <module name="SpringMVC-demo05" />
       </profile>
