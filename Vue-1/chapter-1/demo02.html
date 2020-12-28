@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--View层 模板-->
+<div id="app">
+    <h3 v-if="ok">Yes</h3>
+    <h3 v-else>No</h3>
+    <h3 v-if="type==='A'">A</h3>
+    <h3 v-else-if="type==='B'">B</h3>
+    <h3 v-else>C</h3>
+
+    <!-- v-for -->
+    <li v-for="item in items">
+        {{item.message}}
+    </li>
+    <br/>
+
+    <!-- v-on -->
+    <button v-on:click="sayHi">click</button>
+    输入的文本：<input type="text" v-model="message2">{{message2}}
+    <br/>
+
+    textarea的例子：<textarea name="" cols="30" rows="10" v-model="message2"></textarea>{{message2}}
+    <br/>
+
+    性别：{{SexChoose}}
+    <input type="radio" name="sex" value="男" v-model="SexChoose"> 男
+    <input type="radio" name="sex" value="女" v-model="SexChoose"> 女
+    <br/>
+
+    <select v-model="SelChoose">
+        <!--实现忽略第一个选项提示-->
+        <option value="" disabled>--请选择--</option>
+        <option>A</option>
+        <option>B</option>
+        <option>C</option>
+    </select>
+    <span>你选择了：{{SelChoose}}</span>
+    <br/>
+
+    组件展示：
+    <!--这里的v-bind第一个是props中的名字。第二个是data中的名字。-->
+    <li01 v-for="show in items2" v-bind:prop="show"></li01>
+</div>
+<!--导入Vue.js-->
+<script src="http://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.min.js"></script>
+<script>
+    /*props接受data中传递来的参数。*/
+    Vue.component("li01",{
+        /*这里的props的名字要和下面{{}}中需要遍历的内容名对应。*/
+        props:['prop'],
+        template:'<li>{{prop}}</li>'
+    });
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            message:"我是点击事件",
+            message2:"",
+            SexChoose:'',
+            SelChoose:"",
+            type: 'A',
+            ok: true,
+            items: [
+                {message: '我是消息1'},
+                {message: '我是消息2'},
+                {message: '我是消息3'},
+            ],
+            items2:[
+              "Java","Linux","C++"
+            ],
+        },
+        methods: {
+            sayHi: function (event) {
+                alert(this.message);
+            }
+        },
+    });
+</script>
+</body>
+</html>

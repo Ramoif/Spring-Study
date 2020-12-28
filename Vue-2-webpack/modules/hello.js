@@ -1,0 +1,13 @@
+/*暴露一个方法*/
+exports.sayHi=function(){
+    document.write("<h1>暴露一个方法ES6</h1>")
+};
+exports.sayHi2=function(){
+    document.write("<h1>暴露2</h1>")
+};
+exports.sayHi3=function(){
+    document.write("<h1>暴露3</h1>")
+};
+exports.sayHi4=function(){
+    document.write("<h1>暴露4</h1>")
+};

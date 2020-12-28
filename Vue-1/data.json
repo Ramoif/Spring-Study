@@ -1,0 +1,25 @@
+{
+  "name":"学习Vue快速上手！",
+  "url": "http://baidu.com",
+  "page": "1",
+  "isNonProfit":"true",
+  "address": {
+    "street": "YC大街",
+    "city":"上海",
+    "country": "中国"
+  },
+  "links": [
+    {
+      "name": "Bili",
+      "url": "https://www.bilibili.com/"
+    },
+    {
+      "name": "微博",
+      "url": "https://www.weibo.com/"
+    },
+    {
+      "name": "百度",
+      "url": "https://www.baidu.com/"
+    }
+  ]
+}

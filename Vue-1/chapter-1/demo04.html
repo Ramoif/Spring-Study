@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <p>{{message}}</p>
+    调用方法记得加上()
+    <p>{{currentTime1()}}</p>
+    调用计算属性不需要()
+    <p>{{currentTime2}}</p>
+
+    <p>列表书籍（举例插槽slot）</p>
+    <ul>
+        <li>Java</li>
+        <li>Linux</li>
+        <li>Python</li>
+    </ul>
+
+    <p>下面是slot的使用举例</p>
+    <todo>
+        <todo-title slot="todo-title" v-bind:title="title"></todo-title>
+        <todo-items slot="todo-items" v-for="item in todoItems" v-bind:item="item"></todo-items>
+    </todo>
+</div>
+<!--导入Vue.js-->
+<script src="http://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.min.js"></script>
+<script>
+    Vue.component("todo", {
+        template: '<div>' + '<slot name="todo-title"></slot>' + '<ul>' + '<slot name="todo-items"></slot>' + '</ul>' + '</div>'
+    });
+    Vue.component("todo-title",{
+        props:['title'],
+        template: '<div>{{title}}</div>'
+    });
+    Vue.component("todo-items",{
+        props:['item'],
+        template:'<li>{{item}}</li>'
+    });
+
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            title:'我是slot演示标题',
+            item:'null',
+            message: "message:通过更改我的值，你可以看到方法会变化，但是计算属性不变化。",
+            todoItems:['我是slot插槽的举例','我是todoItems的第二个元素','我是第三个！']
+        },
+        methods: {
+            currentTime1: function () {
+                return Date.now();
+            }
+        },
+        computed: {
+            currentTime2: function () {
+                return Date.now();
+            }
+        }
+    });
+</script>
+</body>
+</html>
