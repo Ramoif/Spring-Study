@@ -23,6 +23,11 @@
         <module>SpringMVC-demo06-ajax</module>
     </modules>
     <dependencies>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery</artifactId>
+            <version>3.5.1</version>
+        </dependency>
         <!--Spring操作数据库依赖 -->
         <dependency>
             <groupId>org.springframework</groupId>
