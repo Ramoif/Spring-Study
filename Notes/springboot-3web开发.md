@@ -1,4 +1,4 @@
-实战前准备
+### 实战前准备
 ```text
 要解决的问题：
 1、导入静态资源
@@ -20,7 +20,7 @@ public class HelloController {
     }
 }
 ```
-webjars和处理静态资源的方式
+### webjars和处理静态资源的方式
 ```text
 搜索webjars，打开官网，可以用有多种方式导入他的webjars。
 SBT/Play2 = "org.webjars" % "jquery" % "3.5.1"
@@ -47,14 +47,14 @@ http://localhost:8080/webjars/jquery/3.5.1/jquery.js
 1、webjars   [localhost:8080/webjars/]
 2、public，static，/**，resources， [localhost:8080/]
 ```
-自定义首页、图标
+### 自定义首页、图标
 ```text
 选择在resources/public下创建一个index.html
 然后直接启动项目，发现首页变成了index的内容，更换首页成功了。
 更换图标的话，在static下创建一个favicon.ico。
 然后因为谷歌浏览器缓存清理发现没效果，我选择使用Edge，发现图标更换成功了。
 ```
-Thymeleaf模板引擎
+### Thymeleaf模板引擎
 ```text
 首先先要引入thymeleaf。
 spring-boot-starter-thymeleaf
@@ -80,7 +80,7 @@ spring-boot-starter-thymeleaf
 ```html
 <html xmlns:th="http://www.thymeleaf.org">
 ```
-Thymeleaf取值方式
+### Thymeleaf取值方式
 ```text
 ${...}  变量
 *{...}  选择表达式
