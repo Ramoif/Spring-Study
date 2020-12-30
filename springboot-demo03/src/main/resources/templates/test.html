@@ -7,6 +7,10 @@
 
 </head>
 <body>
+<!--文本-->
 <div th:text="${msg}"></div>
+<div th:utext="${msg}"></div>
+<!--遍历-->
+<h3 th:each="user:${users}" th:text="${user}"></h3>
 </body>
 </html>

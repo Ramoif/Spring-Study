@@ -217,8 +217,9 @@ person:
 ```
 #### @ConfigurationProperties 和 @Value 区别
 
-| 功能 | 批量注入 | 一个个指定 |
+| @ConfigurationProperties | @Value |
 | :-: | :-: | :-: |
+| 功能 | 批量注入 | 一个个指定 |
 | 松散语法/绑定：| 支持 | 不支持 |
 | SpEL | 不支持 | 支持 |
 | JSR303数据校验 |支持 | 不支持 |
