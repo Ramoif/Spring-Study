@@ -266,7 +266,7 @@ web开发中的第一位就是安全！  过滤器，拦截器！不能隐私泄
     <artifactId>spring-boot-starter-security</artifactId>
 </dependency>
 ```
-项目中没有具体页面，所以这里举例仅用代码演示：
+项目中没有具体页面，所以这里举例仅用代码演示
 ```java
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
