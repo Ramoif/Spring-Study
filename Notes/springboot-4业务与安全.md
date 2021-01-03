@@ -25,10 +25,12 @@
 </dependency>
 ```
 写一个测试类，测试一下和数据库的连接。  
+```text
 查看到了打印的默认数据源：class com.zaxxer.hikari.HikariDataSource
-测试连接，报错java.sql.SQLException:   
-The server time zone value '�й���׼ʱ��' is unrecognized  
-需要在url加上时区设置。serverTimezone=UTC
+测试连接，报错 java.sql.SQLException:   
+     " The server time zone value '�й���׼ʱ��' is unrecognized "
+我们需要在url加上时区设置。serverTimezone=UTC
+```
 ---
 #### 链接数据库在网页上打印出json格式类型的数据
 ```java
