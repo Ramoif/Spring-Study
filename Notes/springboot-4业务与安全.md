@@ -157,8 +157,10 @@ public class DruidConfig {
     }
 }
 ```
+```text
 打开http://localhost:8080/druid，可以看到一个登陆的页面。
 直接输入上面配置的固定的用户名和密码。登录后显示Druid Monitor，登录成功。
+```
 ---
 ### Mybatis
 启动器名称：mybatis-spring-boot-starter
