@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ycsx.mapper.BookMapper">
+    <select id="queryBookList" resultType="Book">
+        select * from books;
+    </select>
+    <select id="queryBookById" resultType="Book">
+        select * from books where bookID = #{bookID};
+    </select>
+    <insert id="addBook" parameterType="Book">
+        insert into books(bookID, bookName, bookCounts, detail)
+        VALUES (#{bookID}, #{bookName}, #{bookCounts}, #{detail});
+    </insert>
+    <update id="updateBook" parameterType="Book">
+        update books
+        set bookName=#{bookName},
+            bookCounts=#{bookCounts},
+            detail=#{detail}
+        where bookID = #{bookID};
+    </update>
+    <delete id="deleteBook" parameterType="int">
+        delete from books where bookID = #{u_id};
+    </delete>
+</mapper>

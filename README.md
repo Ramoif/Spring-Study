@@ -15,7 +15,7 @@
 
 </beans>
 ```
-(mybatis)配置框架
+mybatis配置框架-configuration
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration
@@ -24,6 +24,16 @@
 <configuration>
 
 </configuration>
+```
+mybatis配置框架-mapper
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ycsx.mapper.BookMapper">
+
+</mapper>
 ```
 maven项目依赖pom.xml中配置
 ```xml
