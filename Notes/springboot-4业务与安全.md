@@ -422,8 +422,9 @@ public class UserRealm extends AuthorizingRealm {
     }
 }
 ```
-#### 连接Mysql验证
+#### 连接Mysql验证，实现数据库中的用户表和权限的认证。
 新建一个User实体类，编写他的Mapper和Service，然后写一个测试类测试查询ByName方法。
+User实体类中应该至少包括有用户名，密码，权限三个信息。
 ```text
 Invalid bound statement (not found) 的解决办法
 1.检查xml文件的namespace是否正确
@@ -432,19 +433,155 @@ Invalid bound statement (not found) 的解决办法
 4.如果你确认没有以上问题,请任意修改下对应的xml文件,比如删除一个空行,保存.问题解决
 5.看下mapper的XML配置路径是否正确
 ```
-替换新的doGetAuthenticationInfo()
+#### 实现简单的权限认证和用户名密码匹配认证，下面演示部分代码。  
+UserRealm.java
 ```java
-@Override
-protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-    System.out.println("执行了认证方法-doGetAuthorizationInfo");
-    UsernamePasswordToken userToken = (UsernamePasswordToken) token;
-    //连接真实的数据库
-    User user = userService.queryUserByName(userToken.getUsername());
-    if (user == null) {
-        return null;    //UnknownAccountException
+public class UserRealm extends AuthorizingRealm {
+    @Autowired
+    UserService userService;
+
+    //授权
+    @Override
+    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
+        System.out.println("授权-doGet");
+
+        //添加user:add授权
+        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+        //info.addStringPermission("user:add");
+
+        //拿到当前登录的对象
+        Subject subject = SecurityUtils.getSubject();
+        User currentUser = (User) subject.getPrincipal();
+
+        //设置当前用户的权限
+        info.addStringPermission(currentUser.getPerms());
+
+        return info;
     }
-    return new SimpleAuthenticationInfo("", user.getPwd(), "");
+
+    //认证
+    @Override
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+        System.out.println("执行了认证方法-doGetAuthorizationInfo");
+        UsernamePasswordToken userToken = (UsernamePasswordToken) token;
+        /*连接真实的数据库*/
+        User user = userService.queryUserByName(userToken.getUsername());
+        if (user == null) {
+            return null;    //抛出UnknownAccountException
+        }
+        return new SimpleAuthenticationInfo(user, user.getPwd(), "");
+    }
 }
 ```
-启动项目，测试在数据库中存在的和不存在的用户分别登陆，成功。  
+ShiroConfig.java
+```java
+@Configuration
+public class ShiroConfig {
+    //ShiroFilterFactoryBean
+    @Bean
+    public ShiroFilterFactoryBean getShiroFilterFactoryBean(@Qualifier("securityManager") DefaultWebSecurityManager defaultWebSecurityManager){
+        ShiroFilterFactoryBean bean = new ShiroFilterFactoryBean();
+        //设置安全管理器
+        bean.setSecurityManager(defaultWebSecurityManager);
+        //添加shiro的内置过滤器
+        /* 
+            anon:无需验证
+            authc:需要认证
+            user:拥有 记住我 功能才能用
+            perms:拥有对某个资源的权限
+            role:拥有某个角色权限
+        */
 
+        Map<String, String> filterMap = new LinkedHashMap<>();
+
+        //授权权限的语句，和未授权页面配套，在这里设置权限访问
+        filterMap.put("/user/add","perms[user:add]");
+        filterMap.put("/user/update","perms[user:update]");
+
+        //登录和未登录的权限
+        /*filterMap.put("/user/add","authc");
+        filterMap.put("/user/update","anon");*/
+
+        bean.setFilterChainDefinitionMap(filterMap);
+        //未授权页面
+        bean.setUnauthorizedUrl("/noauth");
+
+        //设置登录请求
+        bean.setLoginUrl("/toLogin");
+
+        return bean;
+    }
+
+    //DefaultWebSecurityManager
+    @Bean(name = "securityManager")
+    public DefaultWebSecurityManager getDefaultWebSecurityManager(@Qualifier("userRealm") UserRealm userRealm){
+        DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
+        //关联UserRealm
+        manager.setRealm(userRealm());
+        return manager;
+    }
+
+    //Realm，需要自定义类，交给spring托管
+    @Bean
+    public UserRealm userRealm(){
+        return new UserRealm();
+    }
+}
+```
+编写对应的Controller，首页，登录页面，error页面和功能页面。简单的项目构建好之后，
+启动项目，测试在数据库中存在的和不存在的用户分别登陆，成功。  
+测试数据库中没有update权限的root打开add页面成功，update跳转提示错误信息，完成功能测试。 
+#### Controller部分代码
+```java
+@Controller
+public class MyController {
+    @RequestMapping({"/","/index"})
+    public String toIndex(Model model){
+        model.addAttribute("msg","Hello,Shiro!");
+        return "index";
+    }
+
+    @RequestMapping("/user/add")
+    public String add(){
+        return "user/add";
+    }
+
+    @RequestMapping("/user/update")
+    public String update(){
+        return "user/update";
+    }
+
+    @RequestMapping("/toLogin")
+    public String toLogin(){
+        return "login";
+    }
+
+    @RequestMapping("/login")
+    public String login(String username, String password, Model model){
+        //获取当前用户
+        Subject subject = SecurityUtils.getSubject();
+        //封装登录数据
+        UsernamePasswordToken token = new UsernamePasswordToken(username,password);
+        try{
+            subject.login(token);//执行登录的方法需要try catch捕获异常
+            return "index";
+        }catch (UnknownAccountException e){//用户名不存在
+            model.addAttribute("msg","用户名错误");
+            return "login";
+        }catch (IncorrectCredentialsException e){//密码不存在
+            model.addAttribute("msg","密码错误");
+            return "login";
+        }
+    }
+
+    @RequestMapping("/noauth")
+    @ResponseBody
+    public String unAuthorized(){
+        return "没有授权无法访问";
+    }
+}
+```
+#### Shiro整合Thymeleaf
+待更新。
+
+---
