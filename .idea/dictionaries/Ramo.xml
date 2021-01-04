@@ -4,6 +4,7 @@
       <w>axios</w>
       <w>mchange</w>
       <w>ramoif</w>
+      <w>shiro</w>
       <w>springmvc</w>
     </words>
   </dictionary>

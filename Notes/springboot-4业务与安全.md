@@ -312,6 +312,139 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 ```
 ---
 ### Shiro
+首先需要几个依赖：
+```xml
+<!--Shiro 需要配合slf4j和log4j-->
+<dependency>
+    <groupId>org.apache.shiro</groupId>
+    <artifactId>shiro-core</artifactId>
+    <version>1.4.1</version>
+</dependency>
+<!--slf4j-->
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>jcl-over-slf4j</artifactId>
+    <version>1.7.21</version>
+</dependency>
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-log4j12</artifactId>
+    <version>1.7.21</version>
+</dependency>
+<!--log4j-->
+<dependency>
+    <groupId>log4j</groupId>
+    <artifactId>log4j</artifactId>
+    <version>1.2.17</version>
+</dependency>
 
+```
+配置的步骤为：
+1. 导入Maven依赖
+2. 编写shiro.ini
+3. 用官方的快速启动案例测试  
 
+这里说明快速启动案例中的几个重要方法：
+* 获取当前用户对象subject `Subject currentUser = SecurityUtils.getSubject();`
+* 通过当前用户获取Session `Session session = currentUser.getSession();`
+* 判断当前用户是否被验证？ `if(!currentUser.isAuthenticated())`
+* 获得当前用户认证 `currentUser.getPrincipal()`
+* 是否拥有角色 `currentUser.hasRole("roleIdentifier")`
+* 注销 `currentUser.logout()`
+
+三个要素
+* Subject 用户
+* SecurityManager 管理所有用户
+* Realm 连接数据  
+
+编写ShiroConfig
+```java
+@Configuration
+public class ShiroConfig {
+    //ShiroFilterFactoryBean
+    @Bean
+    public ShiroFilterFactoryBean getShiroFilterFactoryBean(@Qualifier("securityManager") DefaultWebSecurityManager defaultWebSecurityManager){
+        ShiroFilterFactoryBean bean = new ShiroFilterFactoryBean();
+        //设置安全管理器
+        bean.setSecurityManager(defaultWebSecurityManager);
+        //添加shiro的内置过滤器
+        /*anon:无需验证
+        * authc:需要认证
+        * user:拥有 记住我 功能才能用
+        * perms:拥有对某个资源的权限
+        * role:拥有某个角色权限*/
+        Map<String, String> filterMap = new LinkedHashMap<>();
+        filterMap.put("/user/add","authc");
+        filterMap.put("/user/update","anon");
+        bean.setFilterChainDefinitionMap(filterMap);
+        //设置登录请求
+        bean.setLoginUrl("/toLogin");
+        return bean;
+    }
+
+    //DefaultWebSecurityManager
+    @Bean(name = "securityManager")
+    public DefaultWebSecurityManager getDefaultWebSecurityManager(@Qualifier("userRealm") UserRealm userRealm){
+        DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
+        //关联UserRealm
+        manager.setRealm(userRealm());
+        return manager;
+    }
+
+    //Realm，需要自定义类，交给spring托管
+    @Bean
+    public UserRealm userRealm(){
+        return new UserRealm();
+    }
+}
+```
+编写UserRealm自定义类
+```java
+public class UserRealm extends AuthorizingRealm {
+    @Override
+    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
+        System.out.println("授权-doGet");
+        return null;
+    }
+
+    @Override
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+        System.out.println("认证-doGet");
+        /*测试用账户密码*/
+        String name = "root";
+        String password = "1234";
+        UsernamePasswordToken userToken = (UsernamePasswordToken) token;
+        if (!userToken.getUsername().equals(name)) {
+            return null;//抛出异常
+        }
+        /*密码认证，shiro*/
+        return new SimpleAuthenticationInfo("",password,"");
+    }
+}
+```
+#### 连接Mysql验证
+新建一个User实体类，编写他的Mapper和Service，然后写一个测试类测试查询ByName方法。
+```text
+Invalid bound statement (not found) 的解决办法
+1.检查xml文件的namespace是否正确
+2.Mapper.java的方法在Mapper.xml中没有，然后执行Mapper的方法会报此
+3.xxxMapper.java的方法返回值是List,而select元素没有正确配置ResultMap,或者只配置ResultType
+4.如果你确认没有以上问题,请任意修改下对应的xml文件,比如删除一个空行,保存.问题解决
+5.看下mapper的XML配置路径是否正确
+```
+替换新的doGetAuthenticationInfo()
+```java
+@Override
+protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+    System.out.println("执行了认证方法-doGetAuthorizationInfo");
+    UsernamePasswordToken userToken = (UsernamePasswordToken) token;
+    //连接真实的数据库
+    User user = userService.queryUserByName(userToken.getUsername());
+    if (user == null) {
+        return null;    //UnknownAccountException
+    }
+    return new SimpleAuthenticationInfo("", user.getPwd(), "");
+}
+```
+启动项目，测试在数据库中存在的和不存在的用户分别登陆，成功。  
 
