@@ -6,8 +6,11 @@
 
     <groupId>com.ycsx</groupId>
     <artifactId>Spring-Study</artifactId>
+    <!--打包方式pom-->
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+
+    <!--项目所有子模块-->
     <modules>
         <module>Spring-demo01</module>
         <module>spring-demo02</module>
@@ -21,7 +24,10 @@
         <module>SpringMVC-demo05</module>
         <module>SSM-Build</module>
         <module>SpringMVC-demo06-ajax</module>
+        <module>springcloud-demo01</module>
     </modules>
+
+    <!--依赖-->
     <dependencies>
         <dependency>
             <groupId>org.webjars</groupId>
@@ -51,10 +57,17 @@
             <artifactId>mybatis</artifactId>
             <version>3.5.6</version>
         </dependency>
+        <!--Junit-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
+        </dependency>
+        <!--数据源 德鲁伊Druid-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.2.4</version>
         </dependency>
         <!-- lombok -->
         <dependency>
@@ -81,8 +94,12 @@
             <artifactId>mybatis-spring</artifactId>
             <version>2.0.6</version>
         </dependency>
-        <!--日志输出 log4j(暂时没导入) -->
-
+        <!--日志输出 log4j-->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
         <!--Servlet依赖-->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -114,6 +131,30 @@
             <version>1.2.75</version>
         </dependency>
 
+        <!--SpringCloud 阶段-->
+        <!--SpringCloud 需要增加引入方式 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-dependencies</artifactId>
+            <version>Greenwich.SR6</version>
+            <type>pom</type>
+            <!--runtime改为import-->
+            <scope>import</scope>
+        </dependency>
+        <!--SpringBoot 注意需要跟cloud一样修改引入方式 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <version>2.1.9.RELEASE</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+        <!--SpringBoot启动器-->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.1.1</version>
+        </dependency>
     </dependencies>
 
     <!--设置过滤（解决mapper生成的target没有xml配置文件。）-->

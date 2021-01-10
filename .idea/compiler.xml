@@ -10,6 +10,7 @@
         <module name="spring-demo02" />
         <module name="Spring-Mybatis-demo02" />
         <module name="Spring-Mybatis-demo01" />
+        <module name="springcloud-demo01" />
         <module name="SpringMVC-demo05" />
         <module name="SpringMVC-demo04" />
         <module name="SpringMVC-demo03" />
